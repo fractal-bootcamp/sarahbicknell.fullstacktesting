@@ -33,7 +33,7 @@ describe("Our five movie api routes", () => {
         prismaMock.movie.findMany.mockResolvedValue(fakeMovies)
 
         //make a get request to movies 
-        const movieRes = await supertest(app).get("/movies");
+        const movieRes = await supertest(app).get('/movies');
 
         //todo: insert some actual data to test
         expect(movieRes.status).toEqual(200)
@@ -41,16 +41,26 @@ describe("Our five movie api routes", () => {
 
     })
 
-    // todo - don't skip me
-    test.skip("Search Movies", async () => {
-        prismaMock.movie.findMany.mockResolvedValue(fakeMovies)
+    test("Get movie by Id", async () => {
+        prismaMock.movie.findUnique.mockResolvedValue(fakeMovie)
 
-        //make a get req to movies with a search query param
-        const searchRes = await supertest(app).get("/movies?search=Fake")
+        const movieIdRes = await supertest(app).get('/movies/345897')
 
-        //todo make this a search function
-        expect(searchRes.status).toEqual(200)
-        expect(searchRes.body).toEqual([fakeMovie])
-
+        expect(movieIdRes.status).toEqual(200)
+        expect(movieIdRes.body).toEqual(fakeMovie)
     })
+
+    test("Search Movies", async () => {
+        prismaMock.movie.findMany.mockResolvedValue(fakeMovies.filter(movie => movie.title.includes("Fake")));
+    
+        const searchRes = await supertest(app).get("/movies?title=Fake");
+        expect(searchRes.status).toEqual(200);
+        expect(searchRes.body).toEqual([fakeMovie]); // Assuming these two contain "Fake"
+    })
+    
+    // test("Favorite movie", async () = > {
+    //   // prisma mock thingy appropriate for this func
+
+    //   const fav
+    // })
 })
