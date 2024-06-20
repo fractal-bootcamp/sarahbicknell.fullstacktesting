@@ -4,6 +4,22 @@ const seed = async () => {
   await client.movie.deleteMany({
     where: {},
   });
+  await client.user.deleteMany({
+    where: {}
+  })
+
+  const users = await client.user.createMany({
+    data: [
+      {
+        id: "4331",
+        name: "Dorothy",
+      },
+      {
+        id: "6790",
+        name: "Sarah"
+      }
+    ]
+  })
 
   const movies = await client.movie.createMany({
     data: [
@@ -23,7 +39,15 @@ const seed = async () => {
         description: "super super crazy",
       }
     ],
-  });
+  })
+
+  const favorite = await client.favorite.create({
+    data: {
+      userId: "4331",
+      movieId: "345897"
+    }
+  })
+
 };
 
 export default seed;
