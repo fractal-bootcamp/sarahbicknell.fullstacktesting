@@ -116,3 +116,26 @@ describe("Favorite movies", () => {
       expect(favoriteRes.body).toEqual(expectedFavorite)
 })
 })
+
+describe("Get fav movies by user id", () => {
+  test("get fav movies", async() => {
+    const favsRes = await supertest(app).get('/4331/favorites')
+    const favMovies = [
+      {
+        userId: "4331",
+        movieId: "5645645"
+      },
+      {
+        userId: "4331",
+        movieId: "345897"
+      },
+      {
+        userId: "4331",
+        movieId: "3453453"
+      }
+    ]
+
+    expect(favsRes.status).toEqual(200)
+    expect(favsRes.body).toEqual(favMovies)
+  })
+})

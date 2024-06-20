@@ -70,5 +70,16 @@ app.put('/movies/:movieId/favorite', async (req, res) => {
     }
 })
 
+app.get('/:userid/favorites', async (req, res) => {
+    const userId = req.params.userid
+
+    const favorites = await client.favorite.findMany({
+        where: {
+            userId: userId
+        }
+    })
+    res.json(favorites)
+})
+
 
 export default app;
