@@ -1,15 +1,16 @@
 import express, { Application, Request, Response, NextFunction } from "express";
-import { PrismaClient } from "@prisma/client";
 
 import { router as userRoutes } from "./routes/user.routes";
 import client from "./lib/client";
+import { PrismaClientValidationError } from "@prisma/client/runtime/library";
 
 const app: Application = express();
+
+app.use(express.json())
 
 app.use("/users", userRoutes);
 
 app.get('/movies', async (req, res) => {
-    console.log(req.query.title)
     if (req.query) {
         const search = req.query.title as string
         const searchMovie = await client.movie.findMany({
@@ -23,8 +24,6 @@ app.get('/movies', async (req, res) => {
         res.send(movies)
     }
 
-    
-
 })
 
 app.get('/movies/:id', async (req, res) => {
@@ -36,6 +35,39 @@ app.get('/movies/:id', async (req, res) => {
         }
     })
     res.send(movie)
+})
+
+app.put('/movies/:movieId/favorite', async (req, res) => {
+    const movieId = req.params.movieId
+    const userId = req.body.userId
+
+    //1.check if movie is already favored by querying the db
+    const favorite = await client.favorite.findFirst({
+        where: {
+            movieId: movieId, 
+            userId: userId
+        }
+    })
+    if (favorite !== null) {
+        const deleteFav = await client.favorite.delete({
+            where: {
+                movieId_userId: {
+                    movieId,
+                    userId
+                }
+            }
+        })
+        return res.json("Favorite Deleted!")
+    } else {
+        const newFav = await client.favorite.create({
+            data: {
+                movieId: movieId, 
+                userId: userId
+            }
+        })
+
+        res.json(newFav)
+    }
 })
 
 
