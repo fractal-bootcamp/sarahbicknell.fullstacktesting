@@ -1,5 +1,4 @@
 import express, { Application, Request, Response, NextFunction } from "express";
-import { PrismaClient } from "@prisma/client";
 
 import { router as userRoutes } from "./routes/user.routes";
 import client from "./lib/client";
@@ -9,7 +8,6 @@ const app: Application = express();
 app.use("/users", userRoutes);
 
 app.get('/movies', async (req, res) => {
-    console.log(req.query.title)
     if (req.query) {
         const search = req.query.title as string
         const searchMovie = await client.movie.findMany({
