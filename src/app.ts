@@ -1,14 +1,12 @@
 import express, { Application, Request, Response, NextFunction } from "express";
-
 import { router as userRoutes } from "./routes/user.routes";
 import client from "./lib/client";
-import { PrismaClientValidationError } from "@prisma/client/runtime/library";
+import cors from 'cors'
 
 const app: Application = express();
-
 app.use(express.json())
-
 app.use("/users", userRoutes);
+app.use(cors())
 
 app.get('/movies', async (req, res) => {
     if (req.query) {
