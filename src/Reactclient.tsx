@@ -1,37 +1,36 @@
-import { useState , useEffect} from 'react'
-import './App.css'
-
-function Movies() {
-//initialize state variable to hold movies
-  const [movies, setMovies] = useState([])
-
-//function thtat fetches movies from the server
-  const fetchMovies  = async () => {
-    try {
-      const response = await fetch('http://localhost:5050/movies') //making get req to the server
-      const data = await response.json(); // parse the response json data
-      setMovies(data) //set movies variable to the returned data
-    } catch(error){
-      console.log('Error fetching movies', error)
-    }
-  }
-
-// this will run the function to make the get request when the component mounts, with dep array empty so it only happens once 
-  useEffect(()=> {
-    fetchMovies()
-  }, [])
+import MovieList from './components/MovieList'
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
 
+function Header() {
   return (
-    <div>
-      <p> List of Movies </p>
-      <ul>
-        {movies.map(movie => (
-          <li key={movie.id}>{movie.title}</li>
-        ))}
-      </ul>
-    </div> 
+    <header>
+      <h1>Flickser</h1>
+      <nav>
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+        <Link to="/movies">Movies</Link>
+      </nav>
+    </header>
+  );
+}
+
+function Footer() {
+  return (
+    <footer> 
+      <p> Created with ♡ by Disco </p>
+    </footer>
   )
 }
 
-export default Movies
+export default function App() {
+  return(
+    <Router>
+      <Header /> 
+        <Routes> 
+          <Route path='/' element={<MovieList />} /> 
+        </Routes>
+      <Footer /> 
+    </Router>
+  )
+}
